@@ -7,7 +7,7 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 bot = telegram.Bot(token=TELEGRAM_TOKEN)
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
+client = openai.OpenAI(api_key=OPENAI_API_KEY)  # 🔥 Обязательно!
 
 app = Flask(__name__)
 
@@ -19,6 +19,7 @@ def webhook():
         text = data["message"].get("text")
 
         if text:
+            # 🔥 Новый способ запроса к OpenAI
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
