@@ -11,12 +11,21 @@ client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 app = Flask(__name__)
 
+# словарь для хранения последних сообщений, чтобы не дублировать ответы
+last_messages = {}
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.get_json()
     if "message" in data:
         chat_id = data["message"]["chat"]["id"]
+        message_id = data["message"]["message_id"]
         text = data["message"].get("text")
+
+        # проверка на повтор
+        if last_messages.get(chat_id) == message_id:
+            return "duplicate", 200
+        last_messages[chat_id] = message_id
 
         if text:
             response = client.chat.completions.create(
